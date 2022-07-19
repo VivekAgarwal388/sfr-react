@@ -58,7 +58,7 @@ const Map = ({ images, center, zoom }) => {
     return (
         <div>
             <LoadScript
-                googleMapsApiKey="AIzaSyC1BamxJufkG6VAkSQTOfoAnQ-_TPkPNp0"
+                googleMapsApiKey="AIzaSyD0v4RPDBRX24gXqpGPoqgbHz0tE3cz0V0"
             >
                 <GoogleMap
                     mapContainerStyle={containerStyle}
