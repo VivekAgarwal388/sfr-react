@@ -1,0 +1,16 @@
+.headerImage {
+    height: 80px;
+    margin: 10px;
+}
+
+.navBar {
+    font-size: 35px;
+}
+
+.date-picker {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 20px
+}
