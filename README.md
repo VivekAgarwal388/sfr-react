@@ -6,7 +6,7 @@
 
 `git clone https://github.com/VivekAgarwal388/sfr-react`
 
-#### 3) From this directory, run
+#### 3) From the sfr-react directory run (this installs the dependencies so it may take some time)
 
 `npm install`
 
