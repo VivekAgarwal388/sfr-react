@@ -29,7 +29,7 @@ const MapComponent = ({ dates, satellites, area }) => {
             $.ajax({
                 type: "GET",
                 crossDomain: true,
-                url: 'http://cics.umd.edu/~vivekag/test/code0/getFiles2.php',
+                url: 'http://cics.umd.edu/~vivekag/test/code0/getFiles.php',
                 data: { years: dateArray, satellites: satelliteFolders },
                 dataType: 'json',
                 error: function (jqxhr, textstatus, errorthrown) {
@@ -46,7 +46,8 @@ const MapComponent = ({ dates, satellites, area }) => {
                                     return a.match(imgRegex)[0].localeCompare(b.match(imgRegex))
                                 });
                                 for (let img = 0; img < obj[day].length; img++) {
-                                    obj[day][img] = obj[day][img].replace("/home/jdong/www/", "http://cics.umd.edu/~jdong/");
+                                    // obj[day][img] = obj[day][img].replace("/home/jdong/www/", "http://cics.umd.edu/~jdong/");
+                                    obj[day][img] = obj[day][img].replace("/home/vivekag/www/", "http://cics.umd.edu/~vivekag/");
                                 }
                             }
                             setImages(obj.flat());
@@ -71,7 +72,7 @@ const MapComponent = ({ dates, satellites, area }) => {
                 <Row md="auto">
                     <Col>
                         <Map images={images} center={centers[area]} zoom={zooms[area]} />
-                        {images ? null : <h1>No Images Match Those Parameters</h1>}
+                        {images && images.length !== 0 ? null : <div><h1>No Images Match Those Parameters</h1><h1>This version only does images in April 2022 for NPP and N20</h1></div>}
                     </Col>
                 </Row>
             </Container>
