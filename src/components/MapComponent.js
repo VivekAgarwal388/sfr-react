@@ -72,7 +72,6 @@ const MapComponent = ({ dates, satellites, area }) => {
                 <Row md="auto">
                     <Col>
                         <Map images={images} center={centers[area]} zoom={zooms[area]} />
-                        {images && images.length !== 0 ? null : <div><h1>No Images Match Those Parameters</h1><h1>This version only does images in April 2022 for NPP and N20</h1></div>}
                     </Col>
                 </Row>
             </Container>

@@ -26,6 +26,7 @@ const NavRight = ({ getParams }) => {
 
     return (
         <div>
+
             <h3>Select Date Range</h3>
             <div className="date-picker">
                 <Row>

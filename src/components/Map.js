@@ -16,6 +16,7 @@ const bounds = {
     west: -125
 };
 
+const libraries = ['drawing']
 
 const Map = ({ images, center, zoom }) => {
     const [index, setIndex] = useState(0);
@@ -79,12 +80,37 @@ const Map = ({ images, center, zoom }) => {
         );
         map.controls[window.google.maps.ControlPosition.LEFT_CENTER].push(colorbarDiv);
 
+        const drawingManager = new window.google.maps.drawing.DrawingManager({
+            drawingControl: true,
+            drawingControlOptions: {
+                position: window.google.maps.ControlPosition.RIGHT_CENTER,
+                drawingModes: [
+                    window.google.maps.drawing.OverlayType.RECTANGLE,
+                ],
+            }
+        });
+
+        drawingManager.setMap(map);
+
+        window.google.maps.event.addListener(drawingManager, 'rectanglecomplete', function (rectangle) {
+            map.fitBounds(rectangle.bounds, 0)
+            rectangle.setMap(null)
+        });
+    };
+
+    const imgInfo = img => {
+        const imgRegex = /.{3}_S[0-9]{8}_[0-9]{6}/;
+        var vals = img.match(imgRegex)[0].split('_');
+        vals[1] = vals[1].substring(5, 7) + '/' + vals[1].substring(7, 9) + '/' + vals[1].substring(1, 5);
+        vals[2] = vals[2].substring(0, 2) + ':' + vals[2].substring(2, 4) + ':' + vals[2].substring(4, 6);
+        return vals;
     };
 
     return (
         <div>
             <LoadScript
                 googleMapsApiKey="AIzaSyD0v4RPDBRX24gXqpGPoqgbHz0tE3cz0V0"
+                libraries={libraries}
             >
                 <GoogleMap
                     mapContainerStyle={containerStyle}
@@ -109,6 +135,7 @@ const Map = ({ images, center, zoom }) => {
                     </div>
                 </GoogleMap>
             </LoadScript>
+            {images && images[index] ? <h2>{imgInfo(images[index]).join(' ')}</h2> : <div><h2>No Images Match Those Parameters</h2><h2>This version only does images in April 2022 for NPP and N20</h2></div>}
         </div>
     )
 }

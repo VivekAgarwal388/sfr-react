@@ -17,6 +17,7 @@ const MapControls = ({ getParams, images }) => {
             const newIndex = (index + incriment + images.length) % images.length;
             setIndex(newIndex)
         }
+        setLooping(false)
     }
 
     useEffect(() => {
