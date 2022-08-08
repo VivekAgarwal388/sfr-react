@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
+var turf = require('@turf/turf');
 
-const MapControls = ({ getParams, images }) => {
+const MapControls = ({ getParams, images, bounds }) => {
     const [looping, setLooping] = useState(true)
     const [index, setIndex] = useState(0)
 
@@ -9,16 +10,22 @@ const MapControls = ({ getParams, images }) => {
         setLooping(!loop)
     }
 
-    const handleIncriment = (incriment) => {
+    const handleIncriment = useCallback((incriment) => {
         if (!images || images.length === 0) {
             setIndex(0);
         }
         else {
-            const newIndex = (index + incriment + images.length) % images.length;
-            setIndex(newIndex)
+            const startIndex = index;
+            var newIndex = (index + incriment + images.length) % images.length;
+            var poly1 = turf.polygon(images[newIndex][1]);
+            var poly2 = turf.polygon([[[bounds.west, bounds.north], [bounds.east, bounds.north], [bounds.east, bounds.south], [bounds.west, bounds.south], [bounds.west, bounds.north]]]);
+            while (!turf.intersect(poly1, poly2) && startIndex !== newIndex) {
+                newIndex = (newIndex + incriment + images.length) % images.length;
+                poly1 = turf.polygon(images[newIndex][1]);
+            }
+            setIndex(newIndex);
         }
-        setLooping(false)
-    }
+    }, [index, images, bounds])
 
     useEffect(() => {
         getParams({ index: index })
@@ -30,20 +37,20 @@ const MapControls = ({ getParams, images }) => {
 
     useEffect(() => {
         if (images && images.length > 0 && looping) {
-            const id = setInterval(() => setIndex((oldIndex) => (oldIndex + 1) % images.length), 1000);
+            const id = setInterval(() => handleIncriment(1), 1000);
 
             return () => {
                 clearInterval(id);
             };
         }
-    }, [images, looping]);
+    }, [images, looping, handleIncriment]);
 
     return (
         <div>
             < ButtonGroup >
-                <Button className="border-secondary" variant="light" onClick={() => handleIncriment(-1)} >{'\u21E6'}</Button>
+                <Button className="border-secondary" variant="light" onClick={() => { handleIncriment(-1); setLooping(false) }} >{'\u21E6'}</Button>
                 <Button className="border-secondary" variant={looping ? "primary" : "light"} onClick={() => handleLooping(looping)} >looping</Button>
-                <Button className="border-secondary" variant="light" onClick={() => handleIncriment(1)} > {'\u21E8'}</Button>
+                <Button className="border-secondary" variant="light" onClick={() => { handleIncriment(1); setLooping(false) }} > {'\u21E8'}</Button>
             </ButtonGroup >
         </div>
     )

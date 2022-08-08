@@ -50,8 +50,15 @@ const MapComponent = ({ dates, satellites, area }) => {
                                     obj[day][img] = obj[day][img].replace("/home/vivekag/www/", "http://cics.umd.edu/~vivekag/");
                                 }
                             }
-                            setImages(obj.flat());
+                            obj = obj.flat();
+                            for (let day = 0; day < obj.length; day++) {
+                                obj[day] = [obj[day], null]
+                            }
+                            setImages(obj);
 
+                            for (let day = 0; day < obj.length; day++) {
+                                getBDY(obj[day]);
+                            }
                         } else {
                             setImages(null);
                             console.log("No results returned by PHP call.");
@@ -89,6 +96,32 @@ function getDates(startDate, stopDate) {
         currentDate = moment(currentDate).add(1, 'days');
     }
     return dateArray;
+}
+
+function getBDY(file) {
+    var fileName = file[0].replace("http://cics.umd.edu/~vivekag/", "/home/vivekag/www/");
+    fileName = fileName.replace(".png", ".bdy");
+    $.ajax({
+        type: "GET",
+        crossDomain: true,
+        url: 'http://cics.umd.edu/~vivekag/test/code0/getBDY.php',
+        data: { fileName: fileName },
+        dataType: 'json',
+        error: function (jqxhr, textstatus, errorthrown) {
+            console.log(textstatus);
+            console.log(errorthrown);
+        },
+        success: function (obj, textstatus) {
+            if (!('error' in obj)) {
+                obj[0].push(obj[0][obj.length - 1])
+                file[1] = obj;
+            }
+            else {
+                console.log("error");
+            }
+        }
+
+    });
 }
 
 export default MapComponent;

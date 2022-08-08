@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleMap, LoadScript, GroundOverlay } from '@react-google-maps/api';
 import MapControls from './MapControls';
-import Slider from '@mui/material/Slider'
+import Slider from '@mui/material/Slider';
 
 const containerStyle = {
     width: '1000px',
@@ -21,7 +21,9 @@ const libraries = ['drawing']
 const Map = ({ images, center, zoom }) => {
     const [index, setIndex] = useState(0);
     const [root, setRoot] = useState(null);
-    const [transparency, setTransparency] = useState(70)
+    const [transparency, setTransparency] = useState(70);
+    const [timeRoot, setTimeRoot] = useState(null);
+    const [currBounds, setBounds] = useState(null);
 
     const getParams = (params) => {
         setIndex(params.index)
@@ -35,11 +37,21 @@ const Map = ({ images, center, zoom }) => {
         if (root) {
             root.render(
                 <div>
-                    <MapControls getParams={getParams} images={images} />
+                    <MapControls getParams={getParams} images={images} bounds={currBounds} />
                 </div>
             );
         }
-    }, [images, root])
+    }, [images, root, currBounds])
+
+    useEffect(() => {
+        if (timeRoot && images && images[index] && images[index][0]) {
+            timeRoot.render(
+                <div style={{ padding: 5 }}>
+                    {imgInfo(images[index][0]).join(' ')}
+                </div>
+            );
+        }
+    }, [images, index, timeRoot])
 
     const handleOnLoad = map => {
         const controlButtonDiv = document.createElement('div');
@@ -70,6 +82,14 @@ const Map = ({ images, center, zoom }) => {
         );
         map.controls[window.google.maps.ControlPosition.BOTTOM_CENTER].push(transparencyDiv);
 
+        const timeDiv = document.createElement('div');
+        timeDiv.style.fontSize = "20px";
+        timeDiv.style.backgroundColor = '#fff';
+        timeDiv.style.marginBottom = "20px";
+        const timeRoot = createRoot(timeDiv);
+        setTimeRoot(timeRoot)
+        map.controls[window.google.maps.ControlPosition.BOTTOM_LEFT].push(timeDiv);
+
         const colorbarDiv = document.createElement('div');
         colorbarDiv.style.paddingLeft = "15px";
         const colorbarRoot = createRoot(colorbarDiv);
@@ -96,6 +116,15 @@ const Map = ({ images, center, zoom }) => {
             map.fitBounds(rectangle.bounds, 0)
             rectangle.setMap(null)
         });
+
+        var timeout;
+        window.google.maps.event.addListener(map, 'bounds_changed', function () {
+            window.clearTimeout(timeout);
+            timeout = window.setTimeout(function () {
+                setBounds(map.getBounds().toJSON())
+            }, 100);
+        });
+
     };
 
     const imgInfo = img => {
@@ -118,24 +147,24 @@ const Map = ({ images, center, zoom }) => {
                     zoom={zoom}
                     onLoad={map => handleOnLoad(map)}
                 >
-                    {images ? <GroundOverlay
-                        key={images[index]}
-                        url={images[index]}
+                    {images && images[index] ? <GroundOverlay
+                        key={images[index][0]}
+                        url={images[index][0]}
                         //url={"http://cics.umd.edu/~vivekag/images/N20/SFR_CONUS_ATMS_N20_S20220401_064050_E20220401_064122.png"}
                         bounds={bounds}
                         opacity={transparency / 100.0}
                     /> : null}
                     <div>
-                        {images ? <GroundOverlay
-                            key={images[index + 1]}
-                            url={images[index + 1]}
+                        {images && images[index] ? <GroundOverlay
+                            key={images[(index + 1) % images.length][0]}
+                            url={images[(index + 1) % images.length][0]}
                             bounds={bounds}
                             opacity={0}
                         /> : null}
                     </div>
                 </GoogleMap>
             </LoadScript>
-            {images && images[index] ? <h2>{imgInfo(images[index]).join(' ')}</h2> : <div><h2>No Images Match Those Parameters</h2><h2>This version only does images in April 2022 for NPP and N20</h2></div>}
+            {images && images[index] ? null : <div><h2>No Images Match Those Parameters</h2><h2>This version only does images in April 2022 for NPP and N20</h2></div>}
         </div>
     )
 }
