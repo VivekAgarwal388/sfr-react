@@ -9,7 +9,7 @@ const centers = [
     { lat: 64, lng: -149 },
     { lat: 25, lng: 0 }
 ];
-const zooms = [4, 4, 2];
+const zooms = [4, 4.2, 2];
 
 
 const MapComponent = ({ dates, satellites, area }) => {

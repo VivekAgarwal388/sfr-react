@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
+import Slider from '@mui/material/Slider';
 var turf = require('@turf/turf');
 
-const MapControls = ({ getParams, images, bounds }) => {
-    const [looping, setLooping] = useState(true)
-    const [index, setIndex] = useState(0)
-
-    const handleLooping = (loop) => {
-        setLooping(!loop)
-    }
+const MapControls = ({ getParams, images, bounds, rectangle }) => {
+    const [looping, setLooping] = useState(true);
+    const [index, setIndex] = useState(0);
+    const [transparency, setTransparency] = useState(70);
+    const [newRectangle, setNewRectangle] = useState(false);
 
     const handleIncriment = useCallback((incriment) => {
         if (!images || images.length === 0) {
@@ -28,8 +27,8 @@ const MapControls = ({ getParams, images, bounds }) => {
     }, [index, images, bounds])
 
     useEffect(() => {
-        getParams({ index: index })
-    }, [index, getParams])
+        getParams({ index: index, transparency: transparency, rectangle: newRectangle })
+    }, [index, transparency, newRectangle, getParams])
 
     useEffect(() => {
         setIndex(0);
@@ -47,11 +46,16 @@ const MapControls = ({ getParams, images, bounds }) => {
 
     return (
         <div>
-            < ButtonGroup >
+            < ButtonGroup style={{ marginLeft: "15px" }}>
                 <Button className="border-secondary" variant="light" onClick={() => { handleIncriment(-1); setLooping(false) }} >{'\u21E6'}</Button>
-                <Button className="border-secondary" variant={looping ? "primary" : "light"} onClick={() => handleLooping(looping)} >looping</Button>
+                <Button className="border-secondary" variant={looping ? "primary" : "light"} onClick={() => setLooping(!looping)} >looping</Button>
                 <Button className="border-secondary" variant="light" onClick={() => { handleIncriment(1); setLooping(false) }} > {'\u21E8'}</Button>
             </ButtonGroup >
+            <div style={{ backgroundColor: "#fff", padding: "10px", marginTop: "10px", marginBottom: "10px" }}>
+                <h3>Transparency</h3>
+                <Slider defaultValue={70} aria-label="Default" valueLabelDisplay="auto" onChange={(event, newVal) => setTransparency(newVal)} />
+            </div>
+            <Button style={{ marginLeft: "75px" }} className="border-secondary" variant={rectangle ? "primary" : "light"} onClick={() => setNewRectangle(!rectangle)} >{'\u2B1B'}</Button>
         </div>
     )
 }
