@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleMap, LoadScript, GroundOverlay } from '@react-google-maps/api';
 import MapControls from './MapControls';
-import ControlsManager from './ControlsManager';
+import Slider from '@mui/material/Slider';
 
 const containerStyle = {
-    width: '1600px',
-    height: '780px'
+    width: '1000px',
+    height: '580px'
 };
 
 const bounds = {
@@ -16,33 +16,22 @@ const bounds = {
     west: -125
 };
 
-const centers = [
-    { lat: 39, lng: -97 },
-    { lat: 64, lng: -149 },
-    { lat: 25, lng: 0 }
-];
-const zooms = [5, 5, 3];
-
 const libraries = ['drawing']
 
-const Map = () => {
+const Map = ({ images, center, zoom }) => {
     const [index, setIndex] = useState(0);
     const [root, setRoot] = useState(null);
     const [transparency, setTransparency] = useState(70);
     const [timeRoot, setTimeRoot] = useState(null);
     const [currBounds, setBounds] = useState(null);
-    const [images, setImages] = useState(null);
-    const [area, setArea] = useState(0);
 
     const getParams = (params) => {
         setIndex(params.index)
     }
 
-    const getControlsParams = (params) => {
-        setImages(params.images)
-        setArea(params.area)
-        setTransparency(params.transparency)
-    }
+    const handleSliderChange = (event, newValue) => {
+        setTransparency(newValue);
+    };
 
     useEffect(() => {
         if (root) {
@@ -57,15 +46,8 @@ const Map = () => {
     useEffect(() => {
         if (timeRoot && images && images[index] && images[index][0]) {
             timeRoot.render(
-                <div style={{ padding: 5, backgroundColor: "#fff" }}>
+                <div style={{ padding: 5 }}>
                     {imgInfo(images[index][0]).join(' ')}
-                </div>
-            );
-        }
-        else if (timeRoot) {
-            timeRoot.render(
-                <div style={{ padding: 5, backgroundColor: "#fff" }}>
-                    No Images Match Those Parameters
                 </div>
             );
         }
@@ -84,44 +66,44 @@ const Map = () => {
         map.controls[window.google.maps.ControlPosition.TOP_CENTER].push(controlButtonDiv);
         setRoot(controlRoot)
 
+        const transparencyDiv = document.createElement('div');
+        transparencyDiv.style.width = "300px";
+        transparencyDiv.style.fontSize = "15";
+        transparencyDiv.style.backgroundColor = '#fff';
+        transparencyDiv.style.paddingLeft = "20px";
+        transparencyDiv.style.paddingRight = "20px";
+        transparencyDiv.style.paddingTop = "5px";
+        transparencyDiv.style.margin = "20px";
+        const transparencyRoot = createRoot(transparencyDiv);
+        transparencyRoot.render(
+            <div>
+                <Slider defaultValue={70} aria-label="Default" valueLabelDisplay="auto" onChange={handleSliderChange} />
+            </div>
+        );
+        map.controls[window.google.maps.ControlPosition.BOTTOM_CENTER].push(transparencyDiv);
+
         const timeDiv = document.createElement('div');
-        timeDiv.style.width = "500px";
-        timeDiv.style.fontSize = "25px";
-        timeDiv.style.fontFamily = "Roboto";
-        timeDiv.style.marginBottom = "10px";
-        timeDiv.style.justifyContent = "center";
-        timeDiv.style.alignContent = "center";
-        timeDiv.style.display = "flex";
+        timeDiv.style.fontSize = "20px";
+        timeDiv.style.backgroundColor = '#fff';
+        timeDiv.style.marginBottom = "20px";
         const timeRoot = createRoot(timeDiv);
         setTimeRoot(timeRoot)
-        map.controls[window.google.maps.ControlPosition.BOTTOM_CENTER].push(timeDiv);
+        map.controls[window.google.maps.ControlPosition.BOTTOM_LEFT].push(timeDiv);
 
         const colorbarDiv = document.createElement('div');
-        colorbarDiv.style.margin = "10px";
+        colorbarDiv.style.paddingLeft = "15px";
         const colorbarRoot = createRoot(colorbarDiv);
         colorbarRoot.render(
             <div>
                 <img src='http://cics.umd.edu/~vivekag/build/images/Colormap.png' alt="Colorbar" className="Colorbar" />
             </div>
         );
-        map.controls[window.google.maps.ControlPosition.RIGHT_CENTER].push(colorbarDiv);
-
-        const controlsDiv = document.createElement('div');
-        controlsDiv.style.marginLeft = "10px";
-        controlsDiv.style.padding = "10px";
-        controlsDiv.style.backgroundColor = '#fff';
-        const controlsRoot = createRoot(controlsDiv);
-        controlsRoot.render(
-            <div>
-                <ControlsManager getParams={getControlsParams} />
-            </div>
-        );
-        map.controls[window.google.maps.ControlPosition.LEFT_TOP].push(controlsDiv);
+        map.controls[window.google.maps.ControlPosition.LEFT_CENTER].push(colorbarDiv);
 
         const drawingManager = new window.google.maps.drawing.DrawingManager({
             drawingControl: true,
             drawingControlOptions: {
-                position: window.google.maps.ControlPosition.RIGHT_TOP,
+                position: window.google.maps.ControlPosition.RIGHT_CENTER,
                 drawingModes: [
                     window.google.maps.drawing.OverlayType.RECTANGLE,
                 ],
@@ -161,8 +143,8 @@ const Map = () => {
             >
                 <GoogleMap
                     mapContainerStyle={containerStyle}
-                    center={centers[area]}
-                    zoom={zooms[area]}
+                    center={center}
+                    zoom={zoom}
                     onLoad={map => handleOnLoad(map)}
                 >
                     {images && images[index] ? <GroundOverlay
@@ -182,6 +164,7 @@ const Map = () => {
                     </div>
                 </GoogleMap>
             </LoadScript>
+            {images && images[index] ? null : <div><h2>No Images Match Those Parameters</h2><h2>This version only does images in April 2022 for NPP and N20</h2></div>}
         </div>
     )
 }
