@@ -4,15 +4,8 @@ import { GoogleMap, LoadScript, GroundOverlay } from '@react-google-maps/api';
 import MapControls from './MapControls';
 
 const containerStyle = {
-    width: '1200px',
-    height: '700px'
-};
-
-const bounds = {
-    north: 50,
-    south: 25,
-    east: -65,
-    west: -125
+    width: '1000px',
+    height: '580px'
 };
 
 const libraries = ['drawing'];
@@ -33,6 +26,7 @@ const Map = ({ images, center, zoom }) => {
     }
 
     useEffect(() => {
+        // console.log(images)
         if (root) {
             root.render(
                 <div>
@@ -74,6 +68,7 @@ const Map = ({ images, center, zoom }) => {
         const controlButtonDiv = document.createElement('div');
         controlButtonDiv.style.paddingRight = "10px";
         controlButtonDiv.style.fontSize = "15";
+        controlButtonDiv.style.fontFamily = "Roboto";
         controlButtonDiv.style.justifyContent = "center";
         controlButtonDiv.style.alignContent = "center";
         controlButtonDiv.style.display = "flex";
@@ -83,17 +78,14 @@ const Map = ({ images, center, zoom }) => {
                 <MapControls getParams={getParams} images={images} />
             </div>
         );
-        map.controls[window.google.maps.ControlPosition.RIGHT_CENTER].push(controlButtonDiv);
+        map.controls[window.google.maps.ControlPosition.RIGHT_BOTTOM].push(controlButtonDiv);
         setRoot(controlRoot)
 
         const timeDiv = document.createElement('div');
-        //timeDiv.style.width = "450px";
         timeDiv.style.fontSize = "25px";
         timeDiv.style.fontFamily = "Roboto";
         timeDiv.style.marginTop = "10px";
-        //timeDiv.style.justifyContent = "center";
-        //timeDiv.style.alignContent = "center";
-        //timeDiv.style.display = "flex";
+        timeDiv.style.marginLeft = "10px";
         const timeRoot = createRoot(timeDiv);
         setTimeRoot(timeRoot)
         map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(timeDiv);
@@ -103,10 +95,10 @@ const Map = ({ images, center, zoom }) => {
         const colorbarRoot = createRoot(colorbarDiv);
         colorbarRoot.render(
             <div>
-                <img src='http://cics.umd.edu/~vivekag/build/images/Colormap-horizontal.png' alt="Colorbar" className="Colorbar" width="400" />
+                <img src='http://cics.umd.edu/~vivekag/build/images/Colormap-horizontal2.png' alt="Colorbar" className="Colorbar" width="400" />
             </div>
         );
-        map.controls[window.google.maps.ControlPosition.BOTTOM_CENTER].push(colorbarDiv);
+        map.controls[window.google.maps.ControlPosition.BOTTOM_LEFT].push(colorbarDiv);
 
         const drawingManager = new window.google.maps.drawing.DrawingManager({
             drawingMode: window.google.maps.drawing.OverlayType.RECTANGLE,
@@ -128,6 +120,8 @@ const Map = ({ images, center, zoom }) => {
                 setBounds(map.getBounds().toJSON())
             }, 100);
         });
+
+        map.setOptions({ streetViewControl: false });
     };
 
     const imgInfo = img => {
@@ -148,20 +142,24 @@ const Map = ({ images, center, zoom }) => {
                     mapContainerStyle={containerStyle}
                     center={center}
                     zoom={zoom}
+                    options={{
+                        streetViewControl: false,
+                        //mapTypeControl: false
+                    }}
                     onLoad={map => handleOnLoad(map)}
                 >
-                    {images && images[index] ? <GroundOverlay
+                    {images && images[index] && images[index][2] ? <GroundOverlay
                         key={images[index][0]}
                         url={images[index][0]}
                         //url={"http://cics.umd.edu/~vivekag/images/N20/SFR_CONUS_ATMS_N20_S20220401_064050_E20220401_064122.png"}
-                        bounds={bounds}
+                        bounds={images[index][2]}
                         opacity={transparency / 100.0}
                     /> : null}
                     <div>
-                        {images && images[index] ? <GroundOverlay
+                        {images && images[index] && images[index][2] ? <GroundOverlay
                             key={images[(index + 1) % images.length][0]}
                             url={images[(index + 1) % images.length][0]}
-                            bounds={bounds}
+                            bounds={images[(index + 1) % images.length][2]}
                             opacity={0}
                         /> : null}
                     </div>

@@ -38,7 +38,7 @@ const MapComponent = ({ dates, satellites, area }) => {
                 },
                 success: function (obj, textstatus) {
                     if (!('error' in obj)) {
-                        if (obj.length > 0) {
+                        if (obj.length > 0 && obj[0].length > 0) {
                             const imgRegex = /S[0-9]{8}_[0-9]{6}/;
 
                             for (let day = 0; day < obj.length; day++) {
@@ -52,13 +52,17 @@ const MapComponent = ({ dates, satellites, area }) => {
                             }
                             obj = obj.flat();
                             for (let day = 0; day < obj.length; day++) {
-                                obj[day] = [obj[day], null]
+                                obj[day] = [obj[day], null, null]
                             }
-                            setImages(obj);
+
+                            var promisesArray = []
 
                             for (let day = 0; day < obj.length; day++) {
-                                getBDY(obj[day]);
+                                promisesArray.push(getBDY(obj[day]));
                             }
+
+                            Promise.all(promisesArray).then(() => { setImages(obj) });
+
                         } else {
                             setImages(null);
                             console.log("No results returned by PHP call.");
@@ -98,30 +102,42 @@ function getDates(startDate, stopDate) {
     return dateArray;
 }
 
-function getBDY(file) {
+async function getBDY(file) {
     var fileName = file[0].replace("http://cics.umd.edu/~vivekag/", "/home/vivekag/www/");
     fileName = fileName.replace(".png", ".bdy");
-    $.ajax({
-        type: "GET",
-        crossDomain: true,
-        url: 'http://cics.umd.edu/~vivekag/test/code0/getBDY.php',
-        data: { fileName: fileName },
-        dataType: 'json',
-        error: function (jqxhr, textstatus, errorthrown) {
-            console.log(textstatus);
-            console.log(errorthrown);
-        },
-        success: function (obj, textstatus) {
-            if (!('error' in obj)) {
-                obj[0].push(obj[0][obj.length - 1])
-                file[1] = obj;
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: "GET",
+            crossDomain: true,
+            url: 'http://cics.umd.edu/~vivekag/test/code0/getBDY.php',
+            data: { fileName: fileName },
+            dataType: 'json',
+            error: function (jqxhr, textstatus, errorthrown) {
+                console.log(textstatus);
+                console.log(errorthrown);
+                reject(0);
+            },
+            success: function (obj, textstatus) {
+                if (!('error' in obj)) {
+                    var bounds = obj[0].shift();
+                    obj[0].push(obj[0][obj.length - 1]);
+                    file[1] = obj;
+                    file[2] = {
+                        north: bounds[3],
+                        south: bounds[2],
+                        east: bounds[1],
+                        west: bounds[0]
+                    };
+                    resolve(1);
+                }
+                else {
+                    console.log("error");
+                    reject(0);
+                }
             }
-            else {
-                console.log("error");
-            }
-        }
 
-    });
+        });
+    })
 }
 
 export default MapComponent;

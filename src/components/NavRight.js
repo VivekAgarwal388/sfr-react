@@ -120,7 +120,7 @@ const NavRight = ({ getParams }) => {
                 </Form>
             </Row>
             <Row className='ml-3'>
-                <h3>Pick Region</h3>
+                <h3>Region</h3>
             </Row>
             <Row>
                 <Form>

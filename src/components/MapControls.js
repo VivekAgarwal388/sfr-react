@@ -46,16 +46,32 @@ const MapControls = ({ getParams, images, bounds, rectangle }) => {
 
     return (
         <div>
-            < ButtonGroup style={{ marginLeft: "15px" }}>
+            < ButtonGroup>
                 <Button className="border-secondary" variant="light" onClick={() => { handleIncriment(-1); setLooping(false) }} >{'\u21E6'}</Button>
                 <Button className="border-secondary" variant={looping ? "primary" : "light"} onClick={() => setLooping(!looping)} >looping</Button>
                 <Button className="border-secondary" variant="light" onClick={() => { handleIncriment(1); setLooping(false) }} > {'\u21E8'}</Button>
             </ButtonGroup >
-            <div style={{ backgroundColor: "#fff", padding: "10px", marginTop: "10px", marginBottom: "10px" }}>
-                <h3>Transparency</h3>
+            <div style={{ marginTop: "10px", fontSize: "20px", marginBottom: "3px" }}>
+                Opacity
+            </div>
+            <div style={{ marginBottom: "10px", backgroundColor: "#fff", paddingLeft: "10px", paddingRight: "10px", paddingTop: "4px", paddingBottom: "2px", width: "157px" }}>
                 <Slider defaultValue={70} aria-label="Default" valueLabelDisplay="auto" onChange={(event, newVal) => setTransparency(newVal)} />
             </div>
-            <Button style={{ marginLeft: "75px" }} className="border-secondary" variant={rectangle ? "primary" : "light"} onClick={() => setNewRectangle(!rectangle)} >{'\u2B1B'}</Button>
+            <div style={{ marginTop: "10px", fontSize: "20px", marginBottom: "2px" }}>
+                Box Selection
+            </div>
+            <div >
+                <Button className="border-secondary" variant={rectangle ? "primary" : "light"} onClick={() => setNewRectangle(!rectangle)} >{'\u2B1B'}</Button>
+            </div>
+            {/*<Row style={{ paddingLeft: 0, paddingRight: 0 }}>
+                <Col md="auto" style={{ paddingLeft: 10, paddingRight: 0 }}>
+                    <Button className="border-secondary" variant={rectangle ? "primary" : "light"} onClick={() => setNewRectangle(!rectangle)} >{'\u2B1B'}</Button>
+                </Col>
+                <Col style={{ fontSize: "20px", paddingTop: "5px", paddingLeft: 5, paddingRight: 0 }}>
+                    Box Selection
+                </Col>
+
+    </Row>*/}
         </div>
     )
 }
