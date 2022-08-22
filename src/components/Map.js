@@ -95,7 +95,7 @@ const Map = ({ images, center, zoom }) => {
         const colorbarRoot = createRoot(colorbarDiv);
         colorbarRoot.render(
             <div>
-                <img src='http://cics.umd.edu/~vivekag/build/images/Colormap-horizontal2.png' alt="Colorbar" className="Colorbar" width="400" />
+                <img src='http://cics.umd.edu/~vivekag/build/images/Colormap-horizontal4.png' alt="Colorbar" className="Colorbar" width="400" />
             </div>
         );
         map.controls[window.google.maps.ControlPosition.BOTTOM_LEFT].push(colorbarDiv);

@@ -17,7 +17,13 @@ const MapControls = ({ getParams, images, bounds, rectangle }) => {
             const startIndex = index;
             var newIndex = (index + incriment + images.length) % images.length;
             var poly1 = turf.polygon(images[newIndex][1]);
-            var poly2 = turf.polygon([[[bounds.west, bounds.north], [bounds.east, bounds.north], [bounds.east, bounds.south], [bounds.west, bounds.south], [bounds.west, bounds.north]]]);
+            var poly2;
+            if (bounds.west < bounds.east) {
+                poly2 = turf.polygon([[[bounds.west, bounds.north], [bounds.east, bounds.north], [bounds.east, bounds.south], [bounds.west, bounds.south], [bounds.west, bounds.north]]]);
+            }
+            else {
+                poly2 = turf.polygon([[[bounds.west - 360, bounds.north], [bounds.east, bounds.north], [bounds.east, bounds.south], [bounds.west - 360, bounds.south], [bounds.west - 360, bounds.north]]]);
+            }
             while (!turf.intersect(poly1, poly2) && startIndex !== newIndex) {
                 newIndex = (newIndex + incriment + images.length) % images.length;
                 poly1 = turf.polygon(images[newIndex][1]);
