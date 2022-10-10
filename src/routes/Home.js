@@ -25,8 +25,8 @@ const Home = () => {
         <div className="App">
             <Navbar />
             <Container fluid>
-                <Row>
-                    <Col md={3}>
+                <Row style={{ minWidth: '1000px' }}>
+                    <Col md="auto">
                         <NavRight getParams={getParams} />
                     </Col>
                     <Col>

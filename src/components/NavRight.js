@@ -1,3 +1,4 @@
+//import { fontSize } from '@mui/system';
 import React, { useState, useEffect } from 'react';
 import { Row, Form } from 'react-bootstrap'
 import Calendar from 'react-calendar';
@@ -26,9 +27,8 @@ const NavRight = ({ getParams }) => {
 
     return (
         <div>
-
-            <h3>Select Date Range</h3>
-            <div className="date-picker">
+            <h5>Select Date Range</h5>
+            <div className="date-picker" style={{ fontSize: "14px" }}>
                 <Row>
                     <Calendar
                         onChange={(dates) => setSelectedDates(dates)}
@@ -40,7 +40,7 @@ const NavRight = ({ getParams }) => {
                 </Row>
             </div>
             <Row className='ml-3'>
-                <h3>Satellites</h3>
+                <h5>Satellites</h5>
             </Row>
             <Row>
                 <Form>
@@ -50,6 +50,7 @@ const NavRight = ({ getParams }) => {
                             label="S-NPP"
                             type={'checkbox'}
                             defaultChecked="checked"
+                            style={{ width: "90px", fontSize: "14px" }}
                             onChange={() => handleOnChange(0)}
                         />
                         <Form.Check
@@ -57,24 +58,30 @@ const NavRight = ({ getParams }) => {
                             label="NOAA-20"
                             type={'checkbox'}
                             defaultChecked="checked"
+                            style={{ width: "90px", fontSize: "14px" }}
                             onChange={() => handleOnChange(1)}
                         />
-                    </div>
-                </Form>
-                <Form>
-                    <div key={`inline-checkbox`} className="mb-3">
                         <Form.Check
                             inline
                             label="NOAA-19"
                             type={'checkbox'}
                             defaultChecked="checked"
+                            style={{ width: "90px", fontSize: "14px" }}
                             onChange={() => handleOnChange(2)}
                         />
+                    </div>
+                </Form>
+            </Row>
+            <Row>
+                <Form>
+                    <div key={`inline-checkbox`} className="mb-3">
+
                         <Form.Check
                             inline
                             label="Metop-B"
                             type={'checkbox'}
                             defaultChecked="checked"
+                            style={{ width: "90px", fontSize: "14px" }}
                             onChange={() => handleOnChange(3)}
                         />
                         <Form.Check
@@ -82,31 +89,38 @@ const NavRight = ({ getParams }) => {
                             label="Metop-C"
                             type={'checkbox'}
                             defaultChecked="checked"
+                            style={{ width: "90px", fontSize: "14px" }}
                             onChange={() => handleOnChange(4)}
                         />
-                    </div>
-                </Form>
-                <Form>
-                    <div key={`inline-checkbox`} className="mb-3">
+                        {/*
                         <Form.Check
                             inline
                             label="GPM"
                             type={'checkbox'}
                             defaultChecked="checked"
+                            style={{width: "90px", fontSize: "14px"}}
                             onChange={() => handleOnChange(5)}
                         />
+                    */}
+                    </div>
+                </Form>
+                {/*}
+                <Form>
+                    <div key={`inline-checkbox`} className="mb-3">
                         <Form.Check
                             inline
                             label="F16"
                             type={'checkbox'}
                             defaultChecked="checked"
                             onChange={() => handleOnChange(6)}
+                            style={{width: "90px", fontSize: "14px"}}
                         />
                         <Form.Check
                             inline
                             label="F17"
                             type={'checkbox'}
                             defaultChecked="checked"
+                            style={{width: "90px", fontSize: "14px"}}
                             onChange={() => handleOnChange(7)}
                         />
                         <Form.Check
@@ -114,13 +128,15 @@ const NavRight = ({ getParams }) => {
                             label="F18"
                             type={'checkbox'}
                             defaultChecked="checked"
+                            style={{width: "90px", fontSize: "14px"}}
                             onChange={() => handleOnChange(8)}
                         />
                     </div>
                 </Form>
+            */}
             </Row>
             <Row className='ml-3'>
-                <h3>Region</h3>
+                <h5>Region</h5>
             </Row>
             <Row>
                 <Form>
@@ -129,6 +145,7 @@ const NavRight = ({ getParams }) => {
                             inline
                             label='CONUS'
                             type='radio'
+                            style={{ width: "90px", fontSize: "14px" }}
                             onChange={() => setArea(0)}
                             checked={area === 0}
                         />
@@ -136,9 +153,11 @@ const NavRight = ({ getParams }) => {
                             inline
                             label="Alaska"
                             type='radio'
+                            style={{ width: "90px", fontSize: "14px" }}
                             onChange={() => setArea(1)}
                             checked={area === 1}
                         />
+                        {/*}
                         <Form.Check
                             inline
                             label="Global"
@@ -146,6 +165,7 @@ const NavRight = ({ getParams }) => {
                             onChange={() => setArea(2)}
                             checked={area === 2}
                         />
+    */}
                     </Form.Group>
                 </Form>
             </Row>

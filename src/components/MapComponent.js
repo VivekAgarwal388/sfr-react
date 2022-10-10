@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Container } from 'react-bootstrap'
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import $ from 'jquery';
 import Map from './Map.js';
 import moment from 'moment';
@@ -15,6 +14,24 @@ const zooms = [4, 4.2, 2];
 const MapComponent = ({ dates, satellites, area }) => {
     const [images, setImages] = useState(null)
 
+    const [width, setWidth] = useState(0);
+    const [height, setHeight] = useState(0);
+
+    useLayoutEffect(() => {
+    }, []);
+
+    useEffect(() => {
+        function handleResize() {
+            setWidth(Math.max(window.innerWidth - 450, 550));
+            setHeight(Math.max(window.innerHeight - 150, 400));
+        }
+
+        setWidth(Math.max(window.innerWidth - 450), 550);
+        setHeight(Math.max(window.innerHeight - 150), 400);
+
+        window.addEventListener('resize', handleResize)
+    }, [])
+
     useEffect(() => {
         if (dates) {
             const extensions = ["npp", "n20", "n19", "mob", "moc", "gpm", "f16", "f17", "f18"];
@@ -29,7 +46,9 @@ const MapComponent = ({ dates, satellites, area }) => {
             $.ajax({
                 type: "GET",
                 crossDomain: true,
-                url: 'http://cics.umd.edu/~vivekag/test/code0/getFiles.php',
+                url: area === 0 ? 'http://cics.umd.edu/~jdong/build_php/code0/getFiles.php' :
+                    'http://cics.umd.edu/~vivekag/test/code0/getFiles.php',
+                //                url: 'http://cics.umd.edu/~jdong/build_php/code0/test_file.php',
                 data: { years: dateArray, satellites: satelliteFolders },
                 dataType: 'json',
                 error: function (jqxhr, textstatus, errorthrown) {
@@ -46,7 +65,7 @@ const MapComponent = ({ dates, satellites, area }) => {
                                     return a.match(imgRegex)[0].localeCompare(b.match(imgRegex))
                                 });
                                 for (let img = 0; img < obj[day].length; img++) {
-                                    // obj[day][img] = obj[day][img].replace("/home/jdong/www/", "http://cics.umd.edu/~jdong/");
+                                    obj[day][img] = obj[day][img].replace("/home/jdong/www/", "http://cics.umd.edu/~jdong/");
                                     obj[day][img] = obj[day][img].replace("/home/vivekag/www/", "http://cics.umd.edu/~vivekag/");
                                 }
                             }
@@ -75,17 +94,12 @@ const MapComponent = ({ dates, satellites, area }) => {
 
             });
         }
-    }, [dates, satellites])
+    }, [dates, satellites, area])
 
     return (
         <div>
-            <Container>
-                <Row md="auto">
-                    <Col>
-                        <Map images={images} center={centers[area]} zoom={zooms[area]} />
-                    </Col>
-                </Row>
-            </Container>
+
+            <Map images={images} center={centers[area]} zoom={zooms[area]} height={height} width={width} />
         </div>
     );
 }
@@ -103,13 +117,13 @@ function getDates(startDate, stopDate) {
 }
 
 async function getBDY(file) {
-    var fileName = file[0].replace("http://cics.umd.edu/~vivekag/", "/home/vivekag/www/");
+    var fileName = file[0].replace("http://cics.umd.edu/~jdong/", "/home/jdong/www/");
     fileName = fileName.replace(".png", ".bdy");
     return new Promise(function (resolve, reject) {
         $.ajax({
             type: "GET",
             crossDomain: true,
-            url: 'http://cics.umd.edu/~vivekag/test/code0/getBDY.php',
+            url: 'http://cics.umd.edu/~jdong/build_php/code0/getBDY.php',
             data: { fileName: fileName },
             dataType: 'json',
             error: function (jqxhr, textstatus, errorthrown) {

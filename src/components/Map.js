@@ -2,15 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleMap, LoadScript, GroundOverlay } from '@react-google-maps/api';
 import MapControls from './MapControls';
-
-const containerStyle = {
-    width: '1000px',
-    height: '580px'
-};
+import colorbar from '../logos/colorbar.png';
 
 const libraries = ['drawing'];
 
-const Map = ({ images, center, zoom }) => {
+const Map = ({ images, center, zoom, height, width }) => {
     const [index, setIndex] = useState(0);
     const [root, setRoot] = useState(null);
     const [transparency, setTransparency] = useState(70);
@@ -18,6 +14,8 @@ const Map = ({ images, center, zoom }) => {
     const [currBounds, setBounds] = useState(null);
     const [rectangleBool, setRectangleBool] = useState(false);
     const [drawingManager, setDrawingManager] = useState(null);
+
+    //    console.log(currBounds)
 
     const getParams = (params) => {
         setIndex(params.index);
@@ -91,11 +89,13 @@ const Map = ({ images, center, zoom }) => {
         map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(timeDiv);
 
         const colorbarDiv = document.createElement('div');
-        colorbarDiv.style.paddingBottom = "10px";
+        colorbarDiv.style.paddingBottom = "25px";
+        //colorbarDiv.style.paddingLeft = "0px";
+        colorbarDiv.style.marginLeft = "-70px";
         const colorbarRoot = createRoot(colorbarDiv);
         colorbarRoot.render(
             <div>
-                <img src='http://cics.umd.edu/~vivekag/build/images/Colormap-horizontal4.png' alt="Colorbar" className="Colorbar" width="400" />
+                <img src={colorbar} alt="Colorbar" className="Colorbar" width="350" />
             </div>
         );
         map.controls[window.google.maps.ControlPosition.BOTTOM_LEFT].push(colorbarDiv);
@@ -135,11 +135,14 @@ const Map = ({ images, center, zoom }) => {
     return (
         <div>
             <LoadScript
-                googleMapsApiKey="AIzaSyD0v4RPDBRX24gXqpGPoqgbHz0tE3cz0V0"
+                googleMapsApiKey="AIzaSyBoDK7ImwLk4LZq-VqEfgJn5igaFjF1A_U"
                 libraries={libraries}
             >
                 <GoogleMap
-                    mapContainerStyle={containerStyle}
+                    mapContainerStyle={{
+                        width: width + "px",
+                        height: height + 'px'
+                    }}
                     center={center}
                     zoom={zoom}
                     options={{
@@ -170,3 +173,6 @@ const Map = ({ images, center, zoom }) => {
 }
 
 export default Map
+
+
+

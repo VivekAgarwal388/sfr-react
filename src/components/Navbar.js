@@ -1,6 +1,8 @@
 import { Col, Row, Nav, Container, NavDropdown } from 'react-bootstrap'
 import { useSearchParams } from 'react-router-dom'
 import React from 'react';
+import logo1 from '../logos/noaabanner.png'
+import logo2 from '../logos/CISESS-logo.png'
 
 const MyNavbar = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -11,7 +13,7 @@ const MyNavbar = () => {
             <Container fluid className='mb-4' >
                 <Row className="align-items-center">
                     <Col md="auto">
-                        <img src='http://cics.umd.edu/~vivekag/build/images/noaabanner.png' alt="NOAA logo" className="headerImage" />
+                        <img src={logo1} alt="CISESS logo" className="headerImage" />
                     </Col>
                     <Col >
                         <Nav justify variant="tabs" onSelect={handleSelect}>
@@ -46,7 +48,7 @@ const MyNavbar = () => {
                         </Nav>
                     </Col>
                     <Col md="auto">
-                        <img src='http://cics.umd.edu/~vivekag/build/images/CISESS-logo.png' alt="CISESS logo" className="headerImage" />
+                        <img src={logo2} alt="CISESS logo" className="headerImage" />
                     </Col>
                 </Row>
             </Container>
@@ -55,3 +57,6 @@ const MyNavbar = () => {
 }
 
 export default MyNavbar;
+
+
+
