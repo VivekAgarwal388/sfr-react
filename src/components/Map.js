@@ -135,7 +135,7 @@ const Map = ({ images, center, zoom, height, width }) => {
     return (
         <div>
             <LoadScript
-                googleMapsApiKey="AIzaSyBoDK7ImwLk4LZq-VqEfgJn5igaFjF1A_U"
+                googleMapsApiKey="AIzaSyD0v4RPDBRX24gXqpGPoqgbHz0tE3cz0V0"
                 libraries={libraries}
             >
                 <GoogleMap
