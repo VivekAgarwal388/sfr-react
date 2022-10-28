@@ -125,10 +125,10 @@ const Map = ({ images, center, zoom, height, width }) => {
     };
 
     const imgInfo = img => {
-        const imgRegex = /.{3}_S[0-9]{8}_[0-9]{6}/;
+        const imgRegex = /[0-9]{8}_[0-9]{6}/;
         var vals = img.match(imgRegex)[0].split('_');
-        vals[1] = vals[1].substring(5, 7) + '/' + vals[1].substring(7, 9) + '/' + vals[1].substring(1, 5);
-        vals[2] = vals[2].substring(0, 2) + ':' + vals[2].substring(2, 4) + ':' + vals[2].substring(4, 6);
+        vals[0] = vals[0].substring(4, 6) + '/' + vals[0].substring(6, 8) + '/' + vals[0].substring(0, 4);
+        vals[1] = vals[1].substring(0, 2) + ':' + vals[1].substring(2, 4) + ':' + vals[1].substring(4, 6);
         return vals;
     };
 
@@ -154,7 +154,6 @@ const Map = ({ images, center, zoom, height, width }) => {
                     {images && images[index] && images[index][2] ? <GroundOverlay
                         key={images[index][0]}
                         url={images[index][0]}
-                        //url={"http://cics.umd.edu/~vivekag/images/N20/SFR_CONUS_ATMS_N20_S20220401_064050_E20220401_064122.png"}
                         bounds={images[index][2]}
                         opacity={transparency / 100.0}
                     /> : null}

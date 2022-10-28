@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import $ from 'jquery';
 import Map from './Map.js';
-import moment from 'moment';
+import moment, { min } from 'moment';
 
-const centers = [
-    { lat: 39, lng: -95 },
-    { lat: 64, lng: -149 },
-    { lat: 25, lng: 0 }
-];
-const zooms = [4, 4.2, 2];
+const center = { lat: 39, lng: -95 };
+
+const zoom = 4;
 
 
-const MapComponent = ({ dates, satellites, area }) => {
+const MapComponentMsfr = ({ dates }) => {
     const [images, setImages] = useState(null)
 
     const [width, setWidth] = useState(0);
@@ -34,21 +31,14 @@ const MapComponent = ({ dates, satellites, area }) => {
 
     useEffect(() => {
         if (dates) {
-            const extensions = ["npp", "n20", "n19", "mob", "moc", "gpm", "f16", "f17", "f18"];
             let dateArray = getDates(dates[0], dates[1]);
-            let satelliteFolders = [];
-            for (let i = 0; i < satellites.length; i++) {
-                if (satellites[i]) {
-                    satelliteFolders.push(extensions[i]);
-                }
-            }
+            let times = [moment(dates[0]).format("HHmmss"), moment(dates[1]).format("HHmmss")];
 
             $.ajax({
                 type: "GET",
                 crossDomain: true,
-                url: area === 0 ? 'http://cics.umd.edu/~jdong/build_php/code0/getFiles.php' :
-                    'http://cics.umd.edu/~vivekag/test/code0/getFiles.php',
-                data: { years: dateArray, satellites: satelliteFolders },
+                url: 'http://cics.umd.edu/~vivekag/test/code0/getFilesMsfr.php',
+                data: { years: dateArray, times: times },
                 dataType: 'json',
                 error: function (jqxhr, textstatus, errorthrown) {
                     console.log(textstatus);
@@ -57,7 +47,8 @@ const MapComponent = ({ dates, satellites, area }) => {
                 success: function (obj, textstatus) {
                     if (!('error' in obj)) {
                         if (obj.length > 0 && obj[0].length > 0) {
-                            const imgRegex = /S[0-9]{8}_[0-9]{6}/;
+
+                            const imgRegex = /[0-9]{8}_[0-9]{6}/;
 
                             for (let day = 0; day < obj.length; day++) {
                                 obj[day] = obj[day].sort(function (a, b) {
@@ -69,17 +60,19 @@ const MapComponent = ({ dates, satellites, area }) => {
                                 }
                             }
                             obj = obj.flat();
-                            for (let day = 0; day < obj.length; day++) {
-                                obj[day] = [obj[day], null, null]
-                            }
-
-                            var promisesArray = []
 
                             for (let day = 0; day < obj.length; day++) {
-                                promisesArray.push(getBDY(obj[day]));
+                                obj[day] = [obj[day], null, null];
+                                obj[day][1] = [[[-130, 55], [-60, 55], [-60, 20], [-130, 20], [-130, 55]]];
+                                obj[day][2] = {
+                                    north: 55,
+                                    south: 20,
+                                    east: -60,
+                                    west: -130
+                                };
                             }
 
-                            Promise.all(promisesArray).then(() => { setImages(obj) });
+                            setImages(obj);
 
                         } else {
                             setImages(null);
@@ -93,18 +86,18 @@ const MapComponent = ({ dates, satellites, area }) => {
 
             });
         }
-    }, [dates, satellites, area])
+    }, [dates])
 
     return (
         <div>
-            <Map images={images} center={area === -1 ? centers[0] : centers[area]} zoom={area === -1 ? zooms[0] : zooms[area]} height={height} width={width} />
+            <Map images={images} center={center} zoom={zoom} height={height} width={width} />
         </div>
     );
 }
 
 function getDates(startDate, stopDate) {
     var dateArray = [];
-    var currentDate = moment(startDate);
+    var currentDate = moment((new Date(startDate)).setHours(0, min = 0));
     var stopDateMoment = moment(stopDate);
     while (currentDate <= stopDateMoment) {
         var formatDate = moment(currentDate).format('YYYYMMDD');
@@ -114,42 +107,4 @@ function getDates(startDate, stopDate) {
     return dateArray;
 }
 
-async function getBDY(file) {
-    var fileName = file[0].replace("http://cics.umd.edu/~jdong/", "/home/jdong/www/");
-    fileName = fileName.replace(".png", ".bdy");
-    return new Promise(function (resolve, reject) {
-        $.ajax({
-            type: "GET",
-            crossDomain: true,
-            url: 'http://cics.umd.edu/~jdong/build_php/code0/getBDY.php',
-            data: { fileName: fileName },
-            dataType: 'json',
-            error: function (jqxhr, textstatus, errorthrown) {
-                console.log(textstatus);
-                console.log(errorthrown);
-                reject(0);
-            },
-            success: function (obj, textstatus) {
-                if (!('error' in obj)) {
-                    var bounds = obj[0].shift();
-                    obj[0].push(obj[0][obj.length - 1]);
-                    file[1] = obj;
-                    file[2] = {
-                        north: bounds[3],
-                        south: bounds[2],
-                        east: bounds[1],
-                        west: bounds[0]
-                    };
-                    resolve(1);
-                }
-                else {
-                    console.log("error");
-                    reject(0);
-                }
-            }
-
-        });
-    })
-}
-
-export default MapComponent;
+export default MapComponentMsfr;
