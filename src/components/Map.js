@@ -15,8 +15,6 @@ const Map = ({ images, center, zoom, height, width }) => {
     const [rectangleBool, setRectangleBool] = useState(false);
     const [drawingManager, setDrawingManager] = useState(null);
 
-    //    console.log(currBounds)
-
     const getParams = (params) => {
         setIndex(params.index);
         setTransparency(params.transparency);
@@ -24,7 +22,6 @@ const Map = ({ images, center, zoom, height, width }) => {
     }
 
     useEffect(() => {
-        // console.log(images)
         if (root) {
             root.render(
                 <div>
@@ -129,6 +126,15 @@ const Map = ({ images, center, zoom, height, width }) => {
         var vals = img.match(imgRegex)[0].split('_');
         vals[0] = vals[0].substring(4, 6) + '/' + vals[0].substring(6, 8) + '/' + vals[0].substring(0, 4);
         vals[1] = vals[1].substring(0, 2) + ':' + vals[1].substring(2, 4) + ':' + vals[1].substring(4, 6);
+        var satellites = {
+            "npp": "S-NPP", "n20": "NOAA-20", "n19": "NOAA-19", "mob": "Metop-B",
+            "moc": "Metop-C", "gpm": "GPM", "f16": "F16", "f17": "F17", "f18": "F18"
+        };
+        for (var key in satellites) {
+            if (img.includes(key)) {
+                vals.unshift(satellites[key]);
+            }
+        }
         return vals;
     };
 

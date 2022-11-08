@@ -6,9 +6,8 @@ import moment from 'moment';
 const centers = [
     { lat: 39, lng: -95 },
     { lat: 64, lng: -149 },
-    { lat: 25, lng: 0 }
 ];
-const zooms = [4, 4.2, 2];
+const zooms = [4, 4];
 
 
 const MapComponent = ({ dates, satellites, area }) => {
@@ -20,14 +19,15 @@ const MapComponent = ({ dates, satellites, area }) => {
     useLayoutEffect(() => {
     }, []);
 
+
     useEffect(() => {
         function handleResize() {
-            setWidth(Math.max(window.innerWidth - 450, 550));
-            setHeight(Math.max(window.innerHeight - 150, 400));
+            setWidth(Math.max(window.innerWidth - 377, 550));
+            setHeight(Math.max(window.innerHeight - 160, 400));
         }
 
-        setWidth(Math.max(window.innerWidth - 450), 550);
-        setHeight(Math.max(window.innerHeight - 150), 400);
+        setWidth(Math.max(window.innerWidth - 377), 550);
+        setHeight(Math.max(window.innerHeight - 160), 400);
 
         window.addEventListener('resize', handleResize)
     }, [])
@@ -97,7 +97,7 @@ const MapComponent = ({ dates, satellites, area }) => {
 
     return (
         <div>
-            <Map images={images} center={area === -1 ? centers[0] : centers[area]} zoom={area === -1 ? zooms[0] : zooms[area]} height={height} width={width} />
+            <Map images={images} center={centers[area]} zoom={zooms[area]} height={height} width={width} />
         </div>
     );
 }

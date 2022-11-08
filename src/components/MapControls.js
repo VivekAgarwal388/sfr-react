@@ -5,7 +5,7 @@ import Slider from '@mui/material/Slider';
 var turf = require('@turf/turf');
 
 const MapControls = ({ getParams, images, bounds, rectangle }) => {
-    const [looping, setLooping] = useState(true);
+    const [looping, setLooping] = useState(false);
     const [index, setIndex] = useState(0);
     const [transparency, setTransparency] = useState(70);
     const [newRectangle, setNewRectangle] = useState(false);
@@ -57,9 +57,9 @@ const MapControls = ({ getParams, images, bounds, rectangle }) => {
 
     return (
         <div style={{ marginTop: "10px", marginBottom: "0px", backgroundColor: "#000", paddingTop: "8px", paddingBottom: "2px", paddingLeft: "8px", paddingRight: "8px" }}>
-            < ButtonGroup>
+            <ButtonGroup>
                 <Button className="border-secondary" variant="light" onClick={() => { handleIncriment(-1); setLooping(false) }} >{'\u21E6'}</Button>
-                <Button className="border-secondary" size="sm" variant={looping ? "primary" : "light"} onClick={() => setLooping(!looping)} >looping</Button>
+                <Button className="border-secondary" style={{ padding: "0.25rem 1rem" }} size="sm" variant={looping ? "primary" : "light"} onClick={() => setLooping(!looping)} >Loop</Button>
                 <Button className="border-secondary" variant="light" onClick={() => { handleIncriment(1); setLooping(false) }} > {'\u21E8'}</Button>
             </ButtonGroup >
             <div style={{ marginTop: "5px", fontSize: "16px", backgroundColor: "#000", marginBottom: "5px" }}>

@@ -20,13 +20,14 @@ const MergedSFR = () => {
             <Navbar />
             <Container fluid>
                 <Row style={{ minWidth: '1000px' }}>
-                    <Col md="auto">
+                    <Col style={{ backgroundColor: "rgb(218, 227, 243)", paddingTop: "20px" }}>
                         <NavRightMsfr getParams={getParams} />
                     </Col>
-                    <Col>
+                    <Col md="auto" style={{ padding: "0px" }}>
                         <MapComponentMsfr dates={dates} />
                     </Col>
                 </Row>
+
             </Container >
         </div >
     );

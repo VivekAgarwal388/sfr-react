@@ -18,7 +18,7 @@ const QuickGuides = () => {
                     </Col>
                 </Row>
             </Container>
-        </div>
+        </div >
     );
 }
 export default QuickGuides;

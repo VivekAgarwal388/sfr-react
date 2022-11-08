@@ -16,7 +16,6 @@ const NavRightMsfr = ({ getParams }) => {
         }
         else {
             getParams({ dates: selectedDates })
-            //console.log("hi")
         }
     }, [selectedDates, getParams])
 
@@ -44,6 +43,17 @@ const NavRightMsfr = ({ getParams }) => {
         }
     }
 
+    const getEndMaxDate = () => {
+        var endBound = new Date(selectedDates[0]);
+        endBound.setDate(selectedDates[0].getDate() + 5);
+        if (endBound > UTCStartDate) {
+            return UTCStartDate;
+        }
+        else {
+            return endBound;
+        }
+    }
+
     const handleStartDate = (date) => {
         if (new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() === new Date(selectedDates[0].getFullYear(), selectedDates[0].getMonth(), selectedDates[0].getDate()).getTime()) {
             setSelectedDates([date, selectedDates[1]])
@@ -54,26 +64,36 @@ const NavRightMsfr = ({ getParams }) => {
 
     return (
         <div>
-            <h5>Select Start Date</h5>
-            <div className="date-picker" style={{ fontSize: "14px" }}>
+            <h5 style={{ textDecoration: "underline" }}>Display Instructions</h5>
+            <ul>
+                <li>Select product from the Product drop-down list on the top</li>
+                <li>Select starting and ending dates and times below</li>
+                <li>Use Box Selection (lower right corner) or the Google Maps zoom
+                    and pan tools to select the area of interest; toggle the Box
+                    Selection button to turn the function on and off</li>
+                <li>Use the slider to adjust opacity</li>
+                <li>Toggle the Loop button to start and stop looping</li>
+            </ul>
+            <hr style={{ color: "black" }} />
+            <h5>Start Date and Time</h5>
+            <div className="date-picker" style={{ fontSize: "15px" }}>
                 <Row>
                     <DatePicker
                         selected={selectedDates[0]}
                         onChange={(date) => handleStartDate(date)}
                         selectsStart
                         startDate={selectedDates[0]}
-                        endDate={selectedDates[1]}
                         maxDate={UTCStartDate}
                         showTimeSelect
-                        inline
                         timeIntervals={10}
                         minTime={(new Date()).setHours(0, min = 0)}
                         maxTime={getStartMaxTime()}
+                        dateFormat="MMMM d, yyyy h:mm aa"
                     />
                 </Row>
             </div>
-            <h5>Select End Date</h5>
-            <div className="date-picker" style={{ fontSize: "14px" }}>
+            <h5>End Date and Time</h5>
+            <div className="date-picker" style={{ fontSize: "15px" }}>
                 <Row>
                     <DatePicker
                         selected={selectedDates[1]}
@@ -82,12 +102,12 @@ const NavRightMsfr = ({ getParams }) => {
                         startDate={selectedDates[0]}
                         endDate={selectedDates[1]}
                         minDate={selectedDates[0]}
-                        maxDate={(new Date(UTCStartDate)).setDate(selectedDates[0].getDate() + 3) > UTCStartDate ? UTCStartDate : (new Date(UTCStartDate)).setDate(selectedDates[0].getDate() + 3)}
+                        maxDate={getEndMaxDate()}
                         showTimeSelect
-                        inline
                         timeIntervals={10}
                         minTime={getEndMinTime()}
                         maxTime={getEndMaxTime()}
+                        dateFormat="MMMM d, yyyy h:mm aa"
                     />
                 </Row>
             </div>

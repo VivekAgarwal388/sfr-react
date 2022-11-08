@@ -1,40 +1,46 @@
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import Home from './routes/Home';
-import QuickGuides from './routes/QuickGuides';
+import SFR from './routes/SFR';
 import MergedSFR from './routes/MergedSFR';
-import AlaskaSFR from './routes/AlaskaSFR';
-import GlobalSFR from './routes/GlobalSFR';
-
+import Animations from './routes/Animations';
+import Publication from './routes/Publication';
+import Team from './routes/Team';
 
 function App() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState(<Home />);
+  const [page, setPage] = useState(null);
 
   useEffect(() => {
     switch (searchParams.get('page')) {
       case null:
-        setSearchParams({ page: 'home' });
+        setSearchParams({ page: 'SFR-CONUS' });
+        setPage(<SFR area={0} />);
+        break;
+      case 'Home':
         setPage(<Home />);
         break;
-      case 'home':
-        setPage(<Home />);
+      case 'SFR-CONUS':
+        setPage(<SFR area={0} />);
         break;
-      case 'quick_guides':
-        setPage(<QuickGuides />);
+      case 'SFR-Alaska':
+        setPage(<SFR area={1} />);
         break;
-      case 'merged_sfr':
+      case 'mSFR-CONUS':
         setPage(<MergedSFR />);
         break;
-      case 'alaska_sfr':
-        setPage(<AlaskaSFR />);
+      case 'Animations':
+        setPage(<Animations />);
         break;
-      case 'global_sfr':
-        setPage(<GlobalSFR />);
+      case 'Publication':
+        setPage(<Publication />);
+        break;
+      case 'Team':
+        setPage(<Team />);
         break;
       default:
-        setSearchParams({ page: 'home' });
-        setPage(<Home />);
+        setSearchParams({ page: 'SFR-CONUS' });
+        setPage(<SFR area={0} />);
         break;
     }
   }, [searchParams, setSearchParams])

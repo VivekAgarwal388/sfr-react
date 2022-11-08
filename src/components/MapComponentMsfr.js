@@ -19,12 +19,12 @@ const MapComponentMsfr = ({ dates }) => {
 
     useEffect(() => {
         function handleResize() {
-            setWidth(Math.max(window.innerWidth - 450, 550));
-            setHeight(Math.max(window.innerHeight - 150, 400));
+            setWidth(Math.max(window.innerWidth - 377, 550));
+            setHeight(Math.max(window.innerHeight - 160, 400));
         }
 
-        setWidth(Math.max(window.innerWidth - 450), 550);
-        setHeight(Math.max(window.innerHeight - 150), 400);
+        setWidth(Math.max(window.innerWidth - 377), 550);
+        setHeight(Math.max(window.innerHeight - 160), 400);
 
         window.addEventListener('resize', handleResize)
     }, [])

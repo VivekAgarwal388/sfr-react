@@ -1,9 +1,8 @@
-//import { fontSize } from '@mui/system';
 import React, { useState, useEffect } from 'react';
 import { Row, Form } from 'react-bootstrap'
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
 import '../App.css'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const NavRight = ({ getParams }) => {
     const date = new Date();
@@ -12,8 +11,6 @@ const NavRight = ({ getParams }) => {
     const [satellites, setSatellites] = useState(
         new Array(9).fill(true)
     );
-    const [area, setArea] = useState(0);
-
 
     const handleOnChange = (position) => {
         var satellitesCopy = [...satellites];
@@ -22,23 +19,50 @@ const NavRight = ({ getParams }) => {
     }
 
     useEffect(() => {
-        getParams({ dates: selectedDates, satellites: satellites, area: area })
-    }, [selectedDates, satellites, area, getParams])
+        getParams({ dates: selectedDates, satellites: satellites })
+    }, [selectedDates, satellites, getParams])
 
     return (
         <div>
-            <h5>Select Date Range</h5>
-            <div className="date-picker" style={{ fontSize: "14px" }}>
+            <h5 style={{ textDecoration: "underline" }}>Display Instructions</h5>
+            <ul>
+                <li>Select product from the Product drop-down list on the top</li>
+                <li>Select starting and ending dates below</li>
+                <li>Use Box Selection (lower right corner) or the Google Maps zoom
+                    and pan tools to select the area of interest; toggle the Box
+                    Selection button to turn the function on and off</li>
+                <li>Use the slider to adjust opacity</li>
+                <li>Toggle the Loop button to start and stop looping</li>
+            </ul>
+            <hr style={{ color: "black" }} />
+            <h5>Start Date</h5>
+            <div className="date-picker" style={{ fontSize: "15px" }}>
                 <Row>
-                    <Calendar
-                        onChange={(dates) => setSelectedDates(dates)}
-                        selectRange={true}
-                        minDetail={"year"}
-                        minDate={new Date('January 1, 2018')}
+                    <DatePicker
+                        selected={selectedDates[0]}
+                        onChange={(date) => setSelectedDates([date, date])}
+                        selectsStart
+                        startDate={selectedDates[0]}
                         maxDate={UTCdate}
                     />
                 </Row>
             </div>
+            <h5>End Date</h5>
+            <div className="date-picker" style={{ fontSize: "15px" }}>
+                <Row>
+                    <DatePicker
+                        selected={selectedDates[1]}
+                        onChange={(date) => setSelectedDates([selectedDates[0], date])}
+                        selectsEnd
+                        startDate={selectedDates[0]}
+                        endDate={selectedDates[1]}
+                        minDate={selectedDates[0]}
+                        maxDate={UTCdate}
+                    />
+                </Row>
+            </div>
+
+            {/*
             <Row className='ml-3'>
                 <h5>Satellites</h5>
             </Row>
@@ -92,7 +116,6 @@ const NavRight = ({ getParams }) => {
                             style={{ width: "90px", fontSize: "14px" }}
                             onChange={() => handleOnChange(4)}
                         />
-                        {/*
                         <Form.Check
                             inline
                             label="GPM"
@@ -101,10 +124,9 @@ const NavRight = ({ getParams }) => {
                             style={{width: "90px", fontSize: "14px"}}
                             onChange={() => handleOnChange(5)}
                         />
-                    */}
                     </div>
                 </Form>
-                {/*}
+                {
                 <Form>
                     <div key={`inline-checkbox`} className="mb-3">
                         <Form.Check
@@ -133,42 +155,8 @@ const NavRight = ({ getParams }) => {
                         />
                     </div>
                 </Form>
+            </Row>
             */}
-            </Row>
-            <Row className='ml-3'>
-                <h5>Region</h5>
-            </Row>
-            <Row>
-                <Form>
-                    <Form.Group>
-                        <Form.Check
-                            inline
-                            label='CONUS'
-                            type='radio'
-                            style={{ width: "90px", fontSize: "14px" }}
-                            onChange={() => setArea(0)}
-                            checked={area === 0}
-                        />
-                        <Form.Check
-                            inline
-                            label="Alaska"
-                            type='radio'
-                            style={{ width: "90px", fontSize: "14px" }}
-                            onChange={() => setArea(1)}
-                            checked={area === 1}
-                        />
-                        {/*}
-                        <Form.Check
-                            inline
-                            label="Global"
-                            type='radio'
-                            onChange={() => setArea(2)}
-                            checked={area === 2}
-                        />
-    */}
-                    </Form.Group>
-                </Form>
-            </Row>
         </div>
     );
 }
