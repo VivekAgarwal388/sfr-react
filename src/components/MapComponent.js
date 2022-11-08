@@ -56,7 +56,7 @@ const MapComponent = ({ dates, satellites, area }) => {
                 },
                 success: function (obj, textstatus) {
                     if (!('error' in obj)) {
-                        if (obj.length > 0 && obj[0].length > 0) {
+                        if (obj.length > 0) {
                             const imgRegex = /S[0-9]{8}_[0-9]{6}/;
 
                             for (let day = 0; day < obj.length; day++) {
@@ -79,7 +79,15 @@ const MapComponent = ({ dates, satellites, area }) => {
                                 promisesArray.push(getBDY(obj[day]));
                             }
 
-                            Promise.all(promisesArray).then(() => { setImages(obj) });
+                            Promise.all(promisesArray).then(() => {
+                                if (obj.length > 0) {
+                                    setImages(obj);
+                                }
+                                else {
+                                    setImages(null);
+                                    console.log("No results returned by PHP call.");
+                                }
+                            });
 
                         } else {
                             setImages(null);
